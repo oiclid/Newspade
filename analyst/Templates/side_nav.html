@@ -1,0 +1,63 @@
+{%load staticfiles %}
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                
+                <h3 class="highlight" style="color:#21326F;">
+                <li>
+                    Dashboard<i class="glyphicon glyphicon-dashboard pull-right" style="top: 10px;"></i>
+                </li></h3>
+                <li>
+                    <a href="#"><h4>Filters</a></h4>
+                </li>
+                <li>
+                    <a href="{% url 'aljazeera' %}">Aljazeera**</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'bbc_news' %}">BBC</a>
+                </li>
+                <li>
+                    <a href="{% url 'reuters_news' %}">Reuters</a>
+                </li>
+                
+                <li>
+                
+                    <a href="#" style="border-top-style: solid; border-bottom-style: solid;">Politics</a>
+                
+                </li> 
+                <li>
+                    <a href="{% url 'politico' %}">Politico</a>
+                </li> 
+                
+                <li>
+                    <a href="{% url 'logs' %}">User News</a>
+                </li>                
+               
+                
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+       
+    <!-- /#wrapper -->
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+</body>
+
+</html>

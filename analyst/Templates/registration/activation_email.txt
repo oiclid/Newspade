@@ -1,0 +1,11 @@
+{% load i18n %}
+{% trans "Activate account at" %} {{ site.name }}:
+
+Hey There. You have one more step left to finally be a member.
+
+Click the link below to activate your account.
+
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
+
+
+{% blocktrans %}The above link is valid for {{ expiration_days }} days.{% endblocktrans %}

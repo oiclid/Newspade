@@ -1,0 +1,12 @@
+{% extends 'base.html'%}
+{% load i18n %}
+{% load markdown_deux_tags %}
+{% load crispy_forms_tags %}
+{% block content %}
+<p> Are you sure you want to delete {{Article.title}}</p>
+<form method="post" action="{% url 'delete_article' slug=object.slug %}">{%csrf_token%}
+<a href="{% url 'single_view' slug=object.slug %}">Go back</a>
+<p><input type="submit" value="Confirm Delete"/></p>
+</form>
+
+{%endblock%}

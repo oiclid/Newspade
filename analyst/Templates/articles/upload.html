@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load markdown_deux_tags %}
+{% load crispy_forms_tags %}
+
+{% markdown_allowed %}
+{% markdown_cheatsheet %}
+{% block content %}
+
+<div class="col-sm-6 col-sm-offset3">
+{% if user.is_authenticated %}
+	<form method="POST" action="{% url 'upload_pic' %}" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{ form|crispy }}  
+	<input type="submit" value = {% if submit_btn %}
+			{{submit_btn}}
+		{% else %}Submit{% endif %} class='btn btn-block btn-primary'/>
+
+	</form>
+	<form method="POST" action="">
+{% else %}
+	<div class="row">
+	<h2> Please Login to access this page!</h2>
+	</div>
+{% endif %}
+</div>
+{% endblock %}

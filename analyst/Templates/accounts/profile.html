@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load markdown_deux_tags %}
+
+{% markdown_cheatsheet %}
+
+{% block content %}
+{% if object.username == user.username %}
+<p><a href='{% url "edit_profile" %}'>Edit</a></p>
+{% endif %}
+<div class="row">
+                <div class="col-md-3 col-sm-3">
+                                      
+                    <div class="user-wrapper">
+
+                    {% if object.userprofile.picture %} 
+                        <img src="{{STATIC_URL}}{{object.userprofile.picture}}" class="img-responsive" /> 
+
+                     {% else %}       
+                     	 <img src="http://placehold.it/350x350" class="img-thumbnail" />
+                         
+                     {% endif %}
+
+                    <div class="description">
+
+                    {% if object.userprofile.firstName or object.userprofile.lastName %}
+                       <h4>{{ object.userprofile.firstName }} {{ object.userprofile.lastName }}</h4>
+                    {% endif %}
+
+                       {% if object.userprofile.jobtitle %}
+                        <h5> <strong> {{object.userprofile.jobtitle}}  </strong></h5>
+                        {% endif%}
+
+                        {% if object.userprofile.age%}
+                        <p>
+                            age: {{object.userprofile.age}} 
+                        </p>
+                        {% endif %}
+                        <hr />
+                        <a href="#" class="btn btn-danger btn-sm"> <i class="fa fa-user-plus" ></i> &nbsp;Profile + </a> 
+                    </div>
+                     </div>
+                </div>
+                
+                <div class="col-md-9 col-sm-9  user-wrapper">
+                    <div class="description">
+                         <h3> {{ object.username }}'s  Biography : </h3>
+                    <hr />
+                    {% if object.userprofile.bio %}
+                     <p>{{ object.userprofile.bio|markdown}}</p>
+                   
+                    {% else %}
+                    <p> Errol the Owl, welcomes this user to share his thoughts and experiences with us.</p>
+                      {% endif %}    
+                           
+                    <h3> Social Links: </h3>
+                    <hr />                
+                   <a href="{{ object.userprofile.facebook }}" class="btn btn-social btn-facebook">
+                            <i class="fa fa-facebook"></i>&nbsp; Facebook </a>
+
+                        <a href="{{ object.userprofile.googleplus }}" class="btn btn-social btn-google">
+                            <i class="fa fa-google-plus"></i>&nbsp; Google</a>
+                        <a href="{{ object.userprofile.twitter }}" class="btn btn-social btn-twitter">
+                            <i class="fa fa-twitter"></i>&nbsp; Twitter </a>
+                        <a href="{{ object.userprofile.linkedins}}" class="btn btn-social btn-linkedin">
+                            <i class="fa fa-linkedin"></i>&nbsp; Linkedin </a>
+                    </div>
+                 
+                </div>
+            </div>
+
+<div>
+
+
+{% endblock %}

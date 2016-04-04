@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load bootstrap_pagination %}
+{% block content %}
+
+	<div class="col col-sm-9">
+      <div class="panel">
+          <h1>The Top Stories from Around</h1>
+              
+          <!-- <div class="row">
+              	<div class="col col-sm-8">
+                   <a href="http://feeds.reuters.com/~r/Reuters/domesticNews/~3/hyF1xgD7IoQ/story01.htm"><img  src="http://www.mepc.org/sites/default/files/Capitol-for-Forum-Page.jpg" class="img-responsive"></a>
+                  <h4>Gunman shot and captured at Capitol complex: police</h4>
+                </div> 
+        		<div class="col col-sm-4">
+                  <img src="//placehold.it/400x180/FF3333/FFF" class="img-responsive">
+                  <h4>Aside</h4>
+                  <hr>
+                  <img src="//placehold.it/400x180/FF3333/FFF" class="img-responsive">
+                  <h4>Aside 2</h4>
+              	</div>   
+     		</div> -->
+        		{% for item in news %}
+
+              	<h2><a href='{{ item.url }}'> {{ item.title }}</a></h2>
+                <p>{{item.description|truncatewords:15}}</p>
+              	<p><time> {{item.date|date}}</time></p>
+              
+              	
+				{% endfor %}
+                
+                <hr>
+    	</div>
+   
+              	
+               
+
+
+			{% if is_paginated %}
+				<ul class = "pagination pagination-centered">
+					<!-- <span class="step-links"> -->
+						{% if page_obj.has_previous %}
+							<li><a href="/news/bbc/?page={{page_obj.previous_page_number}}">Previous</a></li>
+						{% endif %}
+
+						<li>
+							<span class="current">Page{{ page_obj.number }} of {{page_obj.paginator.num_pages}}.
+							</span>
+						</li>
+
+						{% if page_obj.has_next %}
+				`		<li>
+							<a href="/news/bbc/?page={{page_obj.next_page_number }}">next</a>
+						</li>
+				</ul>
+
+						{% endif %}
+				
+				</div>
+		
+	{% endif %}
+	 </div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load markdown_deux_tags %}
+{% load i18n %}
+
+{% load crispy_forms_tags %}
+{% markdown_allowed %}
+{% markdown_cheatsheet %}
+{%load comments %}
+<!-- <div class= "page-header"> -->
+
+{% block content %}
+
+<div class="container">
+
+        <div class="row">
+
+            <!-- Blog Post Content Column -->
+            <div class="col-lg-8">
+
+                <!-- Blog Post -->
+
+                <!-- Title -->
+                <h1>{{single_article.title| title}}</h1>
+
+                <!-- Author -->
+                <p class="lead">
+                    by <a href="#">{{single_article.submitter}}</a>
+                </p>
+
+                <hr>
+
+                <!-- Date/Time -->
+                <p><span class="glyphicon glyphicon-time"></span> Posted on {{single_article.timestamp| date}}</p>
+
+                <hr>
+
+                <!-- Preview Image -->
+                {% if single_article.banner %}
+                <img class="img-responsive" src="{{ single_article.banner.url }}" alt="">
+                {% endif %}
+                <hr>
+                <!-- Post Content -->
+                <p class="lead">{{single_article.content|markdown}}</p>
+                <hr>
+                <!---Post Tldr -->
+                {% if single_article.tldr %}
+                <p class="lead">
+                <b>TLDR; </b>{{single_article.tldr|markdown}}</p>
+                {% endif %}
+                    
+                   
+                <hr>
+                <!-- Post Tags -->
+                <div class="tags">
+                {% for tag in single_article.tags.all %}
+                <b><h4>Tags include:</h4></b>
+                <a class="btn btn-xs btn-primary" href="/article/tag/{{tag}}"> {{ tag }}</a>{% csrf_token %}
+                {% if not forloop.last %},{% endif %}
+                {% endfor %}
+                </div>
+                <hr/>
+                <!-- Post Comments --> 
+                {% get_comment_count for single_article as comment_count %}
+                {{comment_count}}comment{{comment_count|pluralize}}</li>
+
+                
+                <br/>
+                <hr/>
+                {% if user.is_authenticated %}                  
+                    
+                    {% get_comment_form for single_article as form %}
+                    <div class='well'>
+
+                        <form role="form"action="{% comment_form_target %}" method="POST">{%csrf_token %}
+                        {{form.comment| as_crispy_field}}
+                   
+                        {{form.object_pk| as_crispy_field}}
+                        {{ form.content_type | as_crispy_field}}
+                        {{form.timestamp| as_crispy_field}}
+                        {{form.security_hash| as_crispy_field}}
+                        <input type="hidden" name="name" value="{{user}}"/>
+                        <input type="hidden" name="email" value="{{user.email| default:'d@mmy.com'}}"/>
+                        <input type="hidden" name="honeypot" value=""/>
+                        <input type="hidden" name="url" value=""/>
+                        <input type="hidden" name="next" value="{% url 'single_view' slug=single_article.slug %}"/>
+                        <input type="submit" id="id_submit" value="Add comment"/>
+                
+                    </form> 
+                    </div>  
+                {% endif %}
+                <hr/>
+                
+                <h4> User Comments: </h4>
+                <!-- {% render_comment_list for single_article %} -->
+                
+
+                
+               {% get_comment_list for single_article as comment_list %}
+                {% for comment in comment_list %}
+                <div class="media">
+                    <div class="media-body">
+                        <h4 class="media-heading">{{comment.name}}
+                            <small>{{comment.submit_date}}</small>
+                        </h4>
+                       {{comment.comment}}
+                    </div>
+                </div>
+                    
+                    
+                    {% if user.is_authenticated and comment.user == user %}
+                        <a class="glyphicon glyphicon-remove" href="{% url 'delete_comment' comment.id %}">delete</a>
+                        <hr/>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

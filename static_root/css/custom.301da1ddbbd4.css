@@ -1,0 +1,155 @@
+.text-align-center {
+	text-align: center;
+}
+.verticallines{
+	border-left: thin solid #333;
+}
+.content-wrapper{
+	width: 1000px;
+	margin:0 auto;
+	padding-left: 20;
+	padding-right: 20;
+}
+.article-title{
+	font-family: normal;
+	color:#21326F;
+	font-size: 25px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 10px;
+
+
+}
+.edit{
+	padding-left: 4px;
+	font-weight: bold;
+
+
+}
+.delete{
+	padding-left:1px;
+	font-weight: bold;
+}
+media (min-width: 768px) {
+  .navbar-collapse {
+    height: auto;
+    border-top: 0;
+    box-shadow: none;
+    max-height: none;
+    padding-left:0;
+    padding-right:0;
+  }
+  .navbar-collapse.collapse {
+    display: block !important;
+    width: auto !important;
+    padding-bottom: 0;
+    overflow: visible !important;
+  }
+  .navbar-collapse.in {
+    overflow-x: visible;
+  }
+
+.navbar
+{
+	max-width:300px;
+	margin-right: 0;
+	margin-left: 0;
+}	
+
+.navbar-nav,
+.navbar-nav > li,
+.navbar-left,
+.navbar-right,
+.navbar-header
+{float:none !important;}
+
+.navbar-right .dropdown-menu {left:0;right:auto;}
+.navbar-collapse .navbar-nav.navbar-right:last-child {
+    margin-right: 0;
+}
+}
+/*.img-responsive:hover{
+
+  transform:scale(2,2);
+  transform-origin:0 0;*/
+}
+/* GENERAL STYLES */
+body {
+    font-family: Verdana;
+    background-color: white;
+}
+
+/* USER PROFILE STYLES */
+
+    .user-wrapper .btn {
+        border-radius: 0px;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        margin: 5px;
+    }
+
+    .user-wrapper .description {
+        padding: 25px;
+        background-color: #fff;
+    }
+    .user-wrapper img {
+        width:100%;
+    }
+
+
+/* SOCIAL BUTTONS */
+.btn-social {
+    color: white;
+    opacity: 0.8;
+}
+
+    .btn-social:hover {
+        color: white;
+        opacity: 1;
+        text-decoration: none;
+    }
+
+.btn-facebook {
+    background-color: #3b5998;
+}
+
+.btn-twitter {
+    background-color: #00aced;
+}
+
+.btn-linkedin {
+    background-color: #0e76a8;
+}
+
+.btn-google {
+    background-color: #c32f10;
+}
+.panel{
+    width: 850px;
+}
+/*home page edit delete buttons */
+ul#menu li {
+    display:inline;
+    padding:10px;
+    
+}
+ul li #delete{
+    padding-right:15px;
+    margin-left: 5px;
+    text-align: left;
+}
+ol li b .article-title{
+    margin-left: 15px;
+}
+.panel h1{
+    text-align: center;
+}
+.panel h2 a{
+    font-family: normal;
+    color:#21326F;
+    font-size: 25px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  
+}
+#id_title{
+    width:137%;
+}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load markdown_deux_tags %}
+{% load comments %}
+{% block content %}
+<style> 
+ul#menu li {
+    display:inline;
+    padding:10px;
+    
+}
+ul li #delete{
+	padding-right:15px;
+	margin-left: 5px;
+	text-align: left;
+}
+ol li b .article-title{
+	margin-left: 15px;
+}
+.panel h1{
+	text-align: center;
+}
+</style>
+
+<div class="col col-sm-9">
+
+  	<div class="panel">
+      	<h1>The Top Stories from You</h1>
+      		<hr>          
+              	
+      	<ol>
+			{% for article in articles_list %}	
+				<form method="post" action="{% url 'vote' %}"class="vote_form">
+
+				<li> <!-- [{{article.votes}}] -->
+				{% csrf_token %}
+				<input type="hidden" id="id_link" name="article" class="hidden_id" value="{{article.pk}}"/>
+				<input type="hidden" id="id_voter" name="voter" class="hidden_id" value="{{user.pk}}"/>
+				{% if not user.is_authenticated %}
+				<button disabled title="Please Login to Vote"> + </button>
+				{% elif article.pk not in voted %}
+				<button>+</button>
+				{% else %}
+				<button>-</button>
+				{% endif %}
+
+				<a href='{{ article.get_absolute_url }}'> 
+						<b class="article-title">{{ article.title }}</b>					
+					</a>
+				</li></form>
+				<ul id="menu">
+					<li align="center|top">Submitted by: {{article.submitter}}</li>
+					<li><time> Last Updated on: {{article.updated|date}}</time></li>
+				</ul>
+				{% if article.submitter == user %}
+					<p>
+						<ul id='menu'>
+							<li><a href="{% url 'update_article' slug=article.slug %}">edit</a></li>
+							
+							<li id="delete"><a href="{% url 'delete_article' slug=article.slug %}">delete</a></li>
+						</ul>
+						
+					</p>
+			
+				{% endif %}
+				<hr>
+
+			{% endfor %}
+		</ol>
+			{% if is_paginated %}
+				<ul class = "pagination pagination-centered">
+					<!-- <span class="step-links"> -->
+						{% if page_obj.has_previous %}
+							<li><a href="/?page={{page_obj.previous_page_number}}">Previous</a></li>
+						{% endif %}
+
+						<li>
+							<span class="current">Page{{ page_obj.number }} of {{page_obj.paginator.num_pages}}.
+							</span>
+						</li>
+
+						{% if page_obj.has_next %}
+				`		<li>
+							<a href="/?page={{page_obj.next_page_number }}">next</a>
+						</li>
+				</ul>
+
+						{% endif %}
+				
+				</div>
+		
+	{% endif %}
+             
+    </div>
+</div>
+
+
+   
+{% endblock %}
+ 

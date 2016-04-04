@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2> Articles tagged under: {{tag}}</h2>
+
+     	
+      	<ol>
+			{% for article in article %}
+				<li>
+				<a href='{{ article.get_absolute_url }}'> 
+						<b class="article-title">{{ article.title }}</b>					
+					</a>
+				</li>
+				<ul id="menu">
+					<li align="center|top">Submitted by: {{article.submitter}}</li>
+					<li><time> Last Updated on: {{article.updated|date}}</time></li>
+				</ul>
+				{% if article.submitter == user %}
+					<p>
+						<ul id='menu'>
+							<li><a href="{% url 'update_article' slug=article.slug %}">edit</a></li>
+							
+							<li id="delete"><a href="{% url 'delete_article' slug=article.slug %}">delete</a></li>
+						</ul>
+						
+					</p>
+			
+				{% endif %}
+				<hr>
+
+			{% endfor %}
+		</ol>
+{% endblock %}
