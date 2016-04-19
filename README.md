@@ -100,7 +100,8 @@ This code is what we are working with more specifically the BBC News. Now back t
       </div>
     
   the base class will be the
-        <div class="yellow">.
+  
+        <div class="yellow">
   This is what the spider will be looking for.The order type of this name is 10 and the Attr type will be BASE.
   
   II) title:
