@@ -99,8 +99,9 @@ This code is what we are working with more specifically the BBC News. Now back t
         </ol>
       </div>
     
-  the base class will be the <div class="yellow">. This is what the spider will be looking for.
-  The order type of this name is 10 and the Attr type will be BASE.
+  the base class will be the
+        <div class="yellow">.
+  This is what the spider will be looking for.The order type of this name is 10 and the Attr type will be BASE.
   
   II) title:
   this is from the BBCNews models and in actual fact the rest will all be from the BBCNews models.
@@ -113,7 +114,7 @@ This code is what we are working with more specifically the BBC News. Now back t
   * one thing to consider is that you want the id field of the url to be true. This is because it will be used to determine the uniqueness of each individual post. It comes from the logic that no two posts have the same link and if we have an entry like that, then one is a repeat of the other and the spider will delete the former.
   
   
-  IV)Description:
+  IV) Description:
   Order = 40
   Attr type = STANDARD
 
