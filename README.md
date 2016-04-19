@@ -114,8 +114,7 @@ This code is what we are working with more specifically the BBC News. Now back t
   Attr type = STANDARD OR DETAIL_PAGE_URL
   * one thing to consider is that you want the id field of the url to be true. This is because it will be used to determine the uniqueness of each individual post. It comes from the logic that no two posts have the same link and if we have an entry like that, then one is a repeat of the other and the spider will delete the former.
   
-  
-  IV) Description:
+ IV) Description:
   Order = 40
   Attr type = STANDARD
 
