@@ -279,6 +279,7 @@ and it should update with each new model you add.
 Admin is what shows up on the admin page of the django models. Now you have alot of freedom on how to implement this however just follow the naming conventions.
 
 for instance::
+
         admin.site.register(ReutersWebsite, ReutersWebsiteAdmin)
         admin.site.register(ReutersNews, ReutersAdAdmin)
 the Ad admin goes with the news.  When implementing the admin, i followed the instructions laid out by the documentation on [dynamic_scraper](https://django-dynamic-scraper.readthedocs.org/en/latest/). However feel free to make changes to your additions as long as it is readable.
@@ -288,7 +289,7 @@ the Ad admin goes with the news.  When implementing the admin, i followed the in
 This version of the views is a little bit inefficient and will be improved upon. There are a couple things we need to work on in the views
     1) filters- the filters will be where users can decide to filter all the new information by company OR by date
     2) featured face- this will eventually be then homepage of the application. It will contain the latest news based on either the trends or the admin. so in mind i was thinking of using itertools.chain to create a list of all entries and then filter by greater than or equal todays date::
-            #something like this
+    
             def featured(request):
                 from itertools import chain
                 try:
