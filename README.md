@@ -1,5 +1,5 @@
 # Newspade
-alright Documentation time.
+Welcome to this space. For the finished product you can visit http://newspade.com and play around with the search engine
 
 The main purpose of this documentation is to give developers a chance to add their own scrapers an successfully run them in production time.
 Please note that due to this I will only cover the code hosted on the mysites app. However i will give a quick recap on the articles application towards the end of this documentation.
@@ -183,19 +183,151 @@ and then open the BBC News page. Voila all the news should be there.
 
 This was a quick run down of how to run the scrapy spider and get the foundation of actually testing the project.
 
+Multiprocessing.
+---------------
+If you do decide to run a live version of the project on a server, please note that there are about 4 active spiders from BBC, Politico, Aljazeera, Reuters. In the next update i will add 5 more spiders from different news channels. Also feel free to make your own spiders and take them for a spin.
+
+However, when it actually comes to scheduling the spiders, you may face some difficulty since running scrapyd on a server like heroku might not be supported[last time i checked]. so here is a small hack that could help you overcome this process.
+
+        import multiprocessing
+        import time
+        import os
+        
+        def processors():
+            # Call the spiders to run
+            os.system('scrapy crawl news_spider -a id=1 -a do_action=yes')
+            time.sleep(60)
+            # add other spiders
+            # Build the Whoosh index
+            os.system("python manage.py rebuild_index")
+            
+        def main():
+            p = multiprocessing.Process(target=processors)
+            p.start()
+        main()
+This will create processes for your spiders to run. Its very simply implemented so if you find something more awesome to use other than this go for it. 
+        
 Developer Role.
 ---------------
 
 So you want to contribute to making the spiders and getting more news to the news search website.
 Inorder to do this we will add new code to the following files.
 * models.py
-* Views.py
+* admin.py
+* views.py
 * Spiders.py
 
 1) Models.py
 ------------
+Lets talk about the models required.
+Before we begin please note that this project uses [dynamic_scraper](https://django-dynamic-scraper.readthedocs.org/en/latest/) and if you feel that i havent explained something to the fullest, check out the authors doc.
+
+The structure of the models will be:
+1) Website where we are scraping the information from. It will inherit from models.Models(Django) and will have the title and url
+of the website.
+2) The news models where all the scraped information will be stored at. It will also inherit from Django models.
+3) the item class. This is the django item class that is described on the scrapy framework for storing your results in the ORM
+
+Example:
+        from django.db import models
+        from django.db.models.signals import pre_delete
+        from scrapy_djangoitem import DjangoItem
+        from dynamic_scraper.models import Scraper, SchedulerRuntime
+        from django.dispatch import receiver
+        
+        # here we are implementing the website where we will actually scrape the info from.
+        class BBCWebsite(models.Model):
+        
+            title = models.CharField(max_length=250)
+        	url = models.URLField()
+        	scraper = models.ForeignKey(Scraper, blank= True, null=True, on_delete=models.SET_NULL)
+        	scraper_runtime = models.ForeignKey(SchedulerRuntime, blank= True, null=True, on_delete=models.SET_NULL
+        
+        # here we are implementing the models where all the information will be stored after we have finished scraping 
+        
+        class BBCNews(models.Model):
+        	news_website = models.ForeignKey(NewsWebsite)
+        	checker_runtime = models.ForeignKey(SchedulerRuntime, blank= True, null=True, on_delete=models.SET_NULL)
+        	title = models.CharField(max_length=250)
+        	url = models.URLField()
+        	description = models.TextField(blank=True)
+        	date = models.DateTimeField(auto_now=True)
+        	company = models.CharField(default="BBC News", max_length=100)
+        	
+        	def __str__(self):
+        		return self.title
+        	
+        	class Meta:
+        		ordering = ['-id']
+        		verbose_name_plural = "BBCNews"
+        		
+        # finally the django item.
+        class NewsAdItem(DjangoItem):
+        	'''
+        	this is a scrapy requirement for all results in the scrapy instance to be saved in the sqlite/Postgresql database in the 
+        	django database.
+        	'''
+            django_model = BBCNews
+
+After all is said and done then just run
+        ./ manage.py makemigrations mysites
+        ./ manage.py migrate 
+and it should update with each new model you add.
+
+2) admin.py:
+-----------
+Admin is what shows up on the admin page of the django models. Now you have alot of freedom on how to implement this however just follow the naming conventions.
+
+for instance::
+        admin.site.register(ReutersWebsite, ReutersWebsiteAdmin)
+        admin.site.register(ReutersNews, ReutersAdAdmin)
+the Ad admin goes with the news.  When implementing the admin, i followed the instructions laid out by the documentation on [dynamic_scraper](https://django-dynamic-scraper.readthedocs.org/en/latest/). However feel free to make changes to your additions as long as it is readable.
+
+3) views.py
+-----------
+This version of the views is a little bit inefficient and will be improved upon. There are a couple things we need to work on in the views
+    1) filters- the filters will be where users can decide to filter all the new information by company OR by date
+    2) featured face- this will eventually be then homepage of the application. It will contain the latest news based on either the trends or the admin. so in mind i was thinking of using itertools.chain to create a list of all entries and then filter by greater than or equal todays date::
+            #something like this
+            def featured(request):
+                from itertools import chain
+                try:
+                    qs1 = BBCNews.objects.filter(date__gte=datetime.date.today)
+                    qs2 = ReutersNews.objects.filter(date__gte=datetime.date.today)
+                    queryset = list(chain(qs1, qs2)
+                    context = {"featured_news":queryset}
+                    template_name = "news/featured.html"
+                    return render(request, template_name, context)
+                except:
+                    raise Http404
+Most of the views implemented are the basic generic class views but we can go a tad further.
+
+4) Spiders
+-----------
+Lets talk about the meat of the app:
+
+        class NewsSpider(DjangoSpider):
+        
+        	name = 'news_spider'
+        
+        	def __init__(self, *args, **kwargs):
+        		self._set_ref_object(BBCWebsite, **kwargs)
+        		self.scraper = self.ref_object.scraper
+        		self.scrape_url = self.ref_object.url
+        		self.scheduler_runtime = self.ref_object.scraper_runtime
+        		self.scraped_obj_class = BBCNews
+        		self.scraped_obj_item_class = NewsAdItem
+        		super(NewsSpider, self).__init__(self, *args, **kwargs)
+The above class inherits from DjangoSpider  which is actually found on dynamic_scraper.django_spider
+The reference object that you set is the Website were we will scrape all the information from. In our case we used BBCWebsite as the class therefore we will import the model a set it up as shown in::
+        
+        self._set_ref_object(BBCWebsite, **kwargs)
+The scraper is set from the reference scraper in that particular class as as well as the scrape_url  which is from the class itself. Everything else is setting where the scraper will spit out the scraped info as well as the Django item for each specific model. Then declare the super since we are working with the DjangoSpider.
+
+The name is the name we will give the spider when we call it using
+        
+        scrapy crawl news_spider ....
+All this lives in the spiders.py file
 
 
-
-
-    
+        
