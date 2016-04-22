@@ -30,14 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 # Default email settings
 DEFAULT_FROM_EMAIL = "errolthe@gmail.com"
-try:
-    EMAIL_USE_TLS = True
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_USER = "righteousprophet33@gmail.com"
-    EMAIL_HOST_PASSWORD = "Gemini_1"
-    EMAIL_PORT = 587
-except:
-    pass
+
 from django.conf import settings
 if settings.DEBUG:
     SITE_URL = "http://127.0.0.1:8000/"
